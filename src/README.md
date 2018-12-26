@@ -1,2 +1,7 @@
-# youtube2mp3
-Repository of the subject "Distributed systems".
+## Dependencias
+Indicar las posibles dependencias si las hubiera.
+
+## Estructura de archivos
+Indicar la estructura de archivos.
+
+TO - DO
