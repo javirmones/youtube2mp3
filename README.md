@@ -7,10 +7,16 @@ El objetivo principal del proyecto es diseñar un sistema cliente-servidor que p
 de ficheros de audio a partir de la URL de clips de youtube. Este sistema debe ser escalable, 
 permitiendo la creación bajo demanda de nuevos servidores encargados de las tareas de descarga y 
 extracción de los audios. Además, estos servidores deben interconectarse y sincronizarse de forma 
-automática entre sí, proporcionando de esta manera un sistema de alta disponibilidad
+automática entre sí, proporcionando de esta manera un sistema de alta disponibilidad.
+
+<p align="center">
+  <img width="400" height="300" src="https://github.com/javirmones/youtube2mp3/blob/development/resources/imgs/1.png">
+</p>
+
+## Tecnologías utilizadas
+El desarrollo principal del proyecto se basa en utilizar Ice en el desarrollo de sistemas distrubidos. Todo ello a mano del lenguaje de programación Python 2.7/3.X Además se ha utilizado como IDE Visual Studio Code y otros derivados.
 
 ## Manejo en el control de versiones
-
 1) Clonar un repositorio
 ```
 $ git clone https://github.com/MedinaAJ/ProcesadoresDelLenguaje
@@ -36,9 +42,6 @@ $ git pull
 git checkout <nombre_rama>
 git branch
 ```
-
-## Tecnologías utilizadas
-El desarrollo principal del proyecto se basa en el uso de Ice para el apredizaje en el desarrolo de sistemas distrubidos a mano del lenguaje de programación Python 2.7/3.X, como IDE principalmente se ha utilizado Visual Studio Code y otros derivados.
 
 ## Participantes del proyecto
 
