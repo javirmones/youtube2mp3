@@ -1,2 +1,50 @@
 # youtube2mp3
-Repository of the subject "Distributed systems".
+
+Repositorio de la asignatura "Sistemas Distribuidos"
+
+## Descripción del proyecto
+El objetivo principal del proyecto es diseñar un sistema cliente-servidor que permita la extracción 
+de ficheros de audio a partir de la URL de clips de youtube. Este sistema debe ser escalable, 
+permitiendo la creación bajo demanda de nuevos servidores encargados de las tareas de descarga y 
+extracción de los audios. Además, estos servidores deben interconectarse y sincronizarse de forma 
+automática entre sí, proporcionando de esta manera un sistema de alta disponibilidad
+
+## Manejo en el control de versiones
+
+1) Clonar un repositorio
+```
+$ git clone https://github.com/MedinaAJ/ProcesadoresDelLenguaje
+```
+2) Añadir los archivos antes de hacer un commit
+```
+$ git add .
+```
+3) Hacer un commit 
+```
+ $ git commit -m "mensaje"
+```
+4) hacer un push
+```
+ $ git push origin <rama_actual>
+```
+5) Realizar un pull
+```
+$ git pull
+```
+6) Para cambiar de rama y comprobar tu rama actual
+```
+git checkout <nombre_rama>
+git branch
+```
+
+## Tecnologías utilizadas
+El desarrollo principal del proyecto se basa en el uso de Ice para el apredizaje en el desarrolo de sistemas distrubidos a mano del lenguaje de programación Python 2.7/3.X, como IDE principalmente se ha utilizado Visual Studio Code y otros derivados.
+
+## Participantes del proyecto
+
+* Javier Monescillo Buitrón
+* Adrian Nikolaev Ivanov
+
+
+## Licencia
+Este proyecto está bajo licencia GLP v3, lea el archivo [LICENSE.md](LICENSE.md) para mas detalles.
