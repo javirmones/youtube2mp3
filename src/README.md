@@ -1,7 +1,9 @@
 ## Dependencias
-Indicar las posibles dependencias si las hubiera.
+```
+sudo pip install youtube-dl
+```
 
 ## Estructura de archivos
-Indicar la estructura de archivos.
+1.  makedirs.sh
 
-TO - DO
+Crea todos los directorios necesarios para el inicio de la práctica y ejecuta el nodo principal.
