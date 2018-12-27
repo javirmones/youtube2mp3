@@ -19,7 +19,7 @@ El desarrollo principal del proyecto se basa en utilizar Ice en el desarrollo de
 ## Manejo en el control de versiones
 1) Clonar un repositorio
 ```
-$ git clone https://github.com/MedinaAJ/ProcesadoresDelLenguaje
+$ git clone https://github.com/javirmones/youtube2mp3
 ```
 2) Añadir los archivos antes de hacer un commit
 ```
