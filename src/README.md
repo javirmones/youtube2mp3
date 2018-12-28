@@ -17,6 +17,7 @@ Crea todos los directorios necesarios (limpiandolos previamente) para el inicio 
 1.  makedirs.sh
 
 Copia los archivos necesarios que necesiten ser distribuidos y los binariza con icepatch2calc.
+
 2. startPathDistribution.sh
 
 Ambos archivos se ejecutan de la siguiente manera:
