@@ -1,23 +1,29 @@
 #!/usr/bin/python3
-# -*- mode:python; coding:utf-8; tab-width:4 -*-
+# -*- coding: utf-8 -*-
 
-'''
-Transfer file over ICE implementation
-'''
-
-
-#################
-#               #
-#  CLIENT SIDE  #
-#               #
-#################
-
+import sys
+import Ice
+Ice.loadSlice('downloader.ice')
+import Downloader
 import binascii
 
 
 BLOCK_SIZE = 10240
 
+# TO - DO
+class Client(Ice.Application):
+    def run(self, argv):
+        proxy = self.communicator().stringToProxy(argv[1])
+        factory =  factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
 
+        if not factory:
+            raise RuntimeError('Invalid proxy')
+
+        return 0
+        
+'''
+Transfer file over ICE implementation
+'''
 def receive(transfer, destination_file):
     '''
     Read a complete file using a Downloader.Transfer object
@@ -35,3 +41,4 @@ def receive(transfer, destination_file):
                 file_contents.write(data)
         transfer.end()
 
+sys.exit(Client().main(sys.argv))

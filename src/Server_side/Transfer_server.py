@@ -1,24 +1,11 @@
-#!/usr/bin/python3
-# -*- mode:python; coding:utf-8; tab-width:4 -*-
-
-'''
-Transfer file over ICE implementation
-'''
-
-#################
-#               #
-#  SERVER SIDE  #
-#               #
-#################
-
-
 import binascii
 
+import sys
 import Ice
 Ice.loadSlice('downloader.ice')
 # pylint: disable=E0401
+# error insalvable
 import Downloader
-
 
 class TransferI(Downloader.Transfer):
     '''
@@ -37,4 +24,3 @@ class TransferI(Downloader.Transfer):
         '''Close transfer and free objects'''
         self.file_contents.close()
         current.adapter.remove(current.id)
-
