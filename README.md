@@ -13,6 +13,12 @@ automática entre sí, proporcionando de esta manera un sistema de alta disponib
   <img width="400" height="300" src="https://github.com/javirmones/youtube2mp3/blob/development/resources/imgs/1.png">
 </p>
 
+La implementación de este proyecto permitirá trabajar los siguientes aspectos:
+  * Comunicación asíncrona
+  * Manejo de canales de eventos
+  * Despliegue de servidores de forma dinámica
+  * Gestión de un grid
+
 ## Tecnologías utilizadas
 El desarrollo principal del proyecto se basa en utilizar Ice en el desarrollo de sistemas distrubidos. Todo ello a mano del lenguaje de programación Python 2.7/3.X Además se ha utilizado como IDE Visual Studio Code y otros derivados.
 
