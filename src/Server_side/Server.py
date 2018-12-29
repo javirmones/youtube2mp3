@@ -16,11 +16,17 @@ from Work_queue import WorkQueue
 from Transfer_server import TransferI
 
 KEY = 'Downloader.IceStorm/TopicManager'
-TOPIC_NAME = 'SyncTopic'
+TOPIC_NAME_SYNC = 'SyncTopic'
+TOPIC_NAME_CLIENT = 'ProgressTopic'
 
 class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
     SongList = set()
     publisher = None
+    stat_publisher = None
+
+    def __init__(self):
+        self.tasks = WorkQueue(self)
+        self.tasks.start()
 
     def getSongList(self, current=None):
         return list(self.SongList)
@@ -46,25 +52,30 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
 
 class DownloaderFactoryI(Downloader.SchedulerFactory):
     servants = {}
-
-    def __init__(self,syncTopic):
-        self.topic=syncTopic
+   
+    def __init__(self,syncTopic, progressTopic):
+        self.syncTopic = syncTopic
+        self.progressTopic = progressTopic
 
     def make(self, name, current=None):
+        qos = {}
         if name in self.servants:
             raise Downloader.SchedulerAlreadyExists()
         servant = DownloaderSchedulerI()
-        qos = {}
-        servant.publisher=self.topic.subscribeAndGetPublisher(qos, servant)
+        proxy_sync = self.syncTopic.subscribeAndGetPublisher(qos, servant)
+        servant.publisher = Downloader.SyncTopicPrx.uncheckedCast(proxy_sync)
+        proxy_stats = self.progressTopic.getPublisher()
+        servant.stat_publisher = Downloader.ProgressTopicPrx.uncheckedCast(proxy_stats)
         identity = Ice.stringToIdentity(name)
         proxy = current.adapter.add(servant, identity)
-        self.servants[name] = proxy
+        self.servants[name] = {'servant': servant, 'proxy': proxy}
         return Downloader.DownloadSchedulerPrx.checkedCast(proxy)
 
     def kill(self, name, current=None):
         if name not in self.servants:
             raise Downloader.SchedulerNotFound()
         current.adapter.remove(Ice.stringToIdentity(name))
+        self.servants[name]['servant'].tasks.destroy()
         del(self.servants[name])
 
     def availableSchedulers(self, current=None):
@@ -73,12 +84,8 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
 
 class Server(Ice.Application):
     def run(self, argv):
-        # Esto ha quedado un poco en el aire, si cada DownloadScheduler va a tener una work_queue o si cada uno de ellos
-        # la van a compartir
-        work_queue = WorkQueue()
+        
         broker = self.communicator()
-
-        # Obtener el topic tal cual lo haciamos en la sesion 5
         topic_mgr_proxy = self.communicator().propertyToProxy(KEY)
 
         if topic_mgr_proxy is None:
@@ -91,12 +98,16 @@ class Server(Ice.Application):
             return 2
 
         try:
-            topic = topic_mgr.retrieve(TOPIC_NAME)
+            topic_sync = topic_mgr.retrieve(TOPIC_NAME_SYNC)
         except IceStorm.NoSuchTopic:
-            topic = topic_mgr.create(TOPIC_NAME)
+            topic_sync = topic_mgr.create(TOPIC_NAME_SYNC)
 
-        # publisher = Downloader.SyncTopicPrx.uncheckedCast(topic.getPublisher())
-        servant = DownloaderFactoryI(topic)
+        try:
+            topic_stats = topic_mgr.retrieve(TOPIC_NAME_CLIENT)
+        except IceStorm.NoSuchTopic:
+            topic_stats = topic_mgr.create(TOPIC_NAME_CLIENT)
+
+        servant = DownloaderFactoryI(syncTopic=topic_sync, progressTopic=topic_stats)
         adapter = broker.createObjectAdapter("DownloaderFactoryAdapter")
         proxy = adapter.addWithUUID(servant)
 

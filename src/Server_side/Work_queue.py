@@ -69,8 +69,9 @@ class WorkQueue(Thread):
     QUIT = 'QUIT'
     CANCEL = 'CANCEL'
 
-    def __init__(self):
+    def __init__(self,scheduler):
         super(WorkQueue, self).__init__()
+        self.scheduler = scheduler
         self.queue = Queue()
 
     def run(self):
@@ -88,8 +89,17 @@ class WorkQueue(Thread):
 
         self.queue.task_done()
 
+    def send_status(self, url, status):
+        status_data = Downloader.ClipData()   
+        status_data.URL = url     
+        status_data.status = status     
+        self.scheduler.stat_publisher.notify(status_data)
+            
+
+
     def add(self, callback, url):
         '''Add new task to queue'''
+        self.send_status(url,Downloader.Status.PENDING)
         self.queue.put(Job(callback, url))
 
     def destroy(self):
@@ -100,14 +110,21 @@ class WorkQueue(Thread):
 
 class Job:
     '''Task: clip to download'''
-    def __init__(self, callback, url):
+    def __init__(self, callback, url, work_queue):
         self.callback = callback
         self.url = url
+        self.work_queue = work_queue
 
     def download(self):
         '''Donwload clip'''
-        self.callback.set_result(_download_mp3_(self.url))
+        self.work_queue.send_status(self.url, Downloader.Status.INPROGRESS)
+        result = _download_mp3_(self.url)
+        self.work_queue.scheduler.SongList.add(result)
+        self.work_queue.send_status(self.url, Downloader.Status.DONE)
+        self.callback.set_result(result)
+
 
     def cancel(self):
         '''Cancel donwload'''
+        self.work_queue.send_status(self.url, Downloader.Status.ERROR)
         self.callback.ice_exception(Downloader.SchedulerCancelJob())
