@@ -5,6 +5,7 @@ import sys
 import Ice
 import IceStorm
 Ice.loadSlice('Downloader.ice')
+# pylint: disable=E0401
 import Downloader
 import time
 
@@ -16,7 +17,6 @@ class SyncTimer(Ice.Application):
 
    def run(self, args):
       broker = self.communicator()
-
       # Get topic manager
       topic_mgr_proxy = self.communicator().propertyToProxy(KEY)
       if topic_mgr_proxy is None:

@@ -99,6 +99,8 @@
             <distrib icepatch="${application}.IcePatch2/server"/>
             <adapter name="DownloaderFactoryAdapter" endpoints="default" id="${server}.DownloaderFactoryAdapter"/>
          </server>
+         <server-instance template="IceStorm" instance-name="ProgressTopic"/>
+         <server-instance template="IceStorm" instance-name="SyncTopic"/>
       </node>
    </application>
 </icegrid>

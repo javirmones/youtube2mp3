@@ -5,12 +5,11 @@
 Simple task queue implementation
 '''
 
-import os.path
 from threading import Thread
 from queue import Queue
 
+import os.path
 import youtube_dl
-
 import Ice
 # pylint: disable=C0413
 Ice.loadSlice('downloader.ice')
@@ -100,7 +99,7 @@ class WorkQueue(Thread):
     def add(self, callback, url):
         '''Add new task to queue'''
         self.send_status(url,Downloader.Status.PENDING)
-        self.queue.put(Job(callback, url))
+        self.queue.put(Job(callback, url, self.queue))
 
     def destroy(self):
         '''Cancel tasks queue'''

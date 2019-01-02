@@ -1,15 +1,14 @@
 #!/usr/bin/python3.6 -u
 # -*- coding: utf-8 -*-
+
 '''
 Implementacion de factoria
 '''
-
 import sys
 import Ice
 import IceStorm
 Ice.loadSlice('downloader.ice')
 # pylint: disable=E0401
-# error insalvable
 import Downloader
 
 from Work_queue import WorkQueue
@@ -46,9 +45,7 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
     def notify(self, songs, current=None):
         songs=set(songs)
         self.SongList.union(songs)
-
         
-
 
 class DownloaderFactoryI(Downloader.SchedulerFactory):
     servants = {}

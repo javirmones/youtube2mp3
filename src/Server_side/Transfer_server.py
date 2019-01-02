@@ -4,7 +4,6 @@ import sys
 import Ice
 Ice.loadSlice('downloader.ice')
 # pylint: disable=E0401
-# error insalvable
 import Downloader
 
 class TransferI(Downloader.Transfer):
