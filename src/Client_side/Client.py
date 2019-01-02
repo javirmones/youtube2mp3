@@ -6,21 +6,53 @@ import Ice
 Ice.loadSlice('downloader.ice')
 import Downloader
 import binascii
+import uuid
+import atexit
 
 
 BLOCK_SIZE = 10240
 
+CLIENT = None
+
+@atexit.register
+def shutdown(*args):
+    if CLIENT is not None:
+	CLIENT.shutdown()
+
+
 # TO - DO
 class Client(Ice.Application):
+    factory=None
+    downloaderSch = None
+    schedulerName = None
     def run(self, argv):
         proxy = self.communicator().stringToProxy(argv[1])
-        factory =  factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
+        self.factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
 
-        if not factory:
+        if not self.factory:
             raise RuntimeError('Invalid proxy')
 
-        return 0
+	self.schedulerName = str(uuid.uuid4())
+	self.downloaderSch = self.factory.make(self.schedulerName)
+
+    def downloadUrl(self, url):
+	self.downloaderSch.addDownloadTask(url)
+
+
+    def getList(self, song):
+	self.downloaderSch.get(song)
+
+
+
+    
+	
+	
         
+    def shutdown(self):
+
+	self.factory.kill(self.schedulerName)
+
+
 '''
 Transfer file over ICE implementation
 '''
@@ -41,4 +73,5 @@ def receive(transfer, destination_file):
                 file_contents.write(data)
         transfer.end()
 
-sys.exit(Client().main(sys.argv))
+CLIENT = Client()
+sys.exit(CLIENT.main(sys.argv))
