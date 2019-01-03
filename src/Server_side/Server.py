@@ -65,15 +65,17 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
         servant.stat_publisher = Downloader.ProgressTopicPrx.uncheckedCast(proxy_stats)
         identity = Ice.stringToIdentity(name)
         proxy = current.adapter.add(servant, identity)
-        self.servants[name] = {'servant': servant, 'proxy': proxy}
+        self.servants[name] = {'servant': servant, 'proxy': proxy, 'syncProxy': proxy_sync}
         return Downloader.DownloadSchedulerPrx.checkedCast(proxy)
 
     def kill(self, name, current=None):
         if name not in self.servants:
             raise Downloader.SchedulerNotFound()
         current.adapter.remove(Ice.stringToIdentity(name))
+        self.syncTopic.unsubscribe(self.servants[name]['syncProxy'])
         self.servants[name]['servant'].tasks.destroy()
         del(self.servants[name])
+
 
     def availableSchedulers(self, current=None):
         return len(self.servants)
@@ -117,6 +119,10 @@ class Server(Ice.Application):
 
         return 0
 
+def main():
+    server = Server()
+    sys.exit(server.main(sys.argv))
 
-server = Server()
-sys.exit(server.main(sys.argv))
+if __name__ == '__main__':
+    main()
+

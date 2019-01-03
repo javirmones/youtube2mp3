@@ -95,10 +95,10 @@ class WorkQueue(Thread):
         self.scheduler.stat_publisher.notify(status_data)
             
 
-
     def add(self, callback, url):
         '''Add new task to queue'''
         self.send_status(url,Downloader.Status.PENDING)
+        # No estoy seguro de que esto esté bien
         self.queue.put(Job(callback, url, self.queue))
 
     def destroy(self):

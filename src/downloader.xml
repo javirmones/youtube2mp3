@@ -93,14 +93,16 @@
       </server-template>
       <node name="node1">
          <server-instance template="IcePatch2" directory="/tmp/youtube2mp3"/>
+         <server-instance template="IceStorm"/>
          <server id="DownloaderFactory" activation="always" exe="./Server.py" pwd="${application.distrib}">
             <properties>
             </properties>
             <distrib icepatch="${application}.IcePatch2/server"/>
             <adapter name="DownloaderFactoryAdapter" endpoints="default" id="${server}.DownloaderFactoryAdapter"/>
          </server>
-         <server-instance template="IceStorm" instance-name="ProgressTopic"/>
-         <server-instance template="IceStorm" instance-name="SyncTopic"/>
+         <server id="SyncTimer" activation="always" exe="./SyncTimer.py" pwd="${application.distrib}">
+            <distrib icepatch="${application}.IcePatch2/server"/>
+         </server>
       </node>
    </application>
 </icegrid>
