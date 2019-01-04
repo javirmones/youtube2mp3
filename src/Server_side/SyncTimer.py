@@ -9,7 +9,7 @@ Ice.loadSlice('Downloader.ice')
 import Downloader
 import time
 
-KEY = 'Downloader.IceStorm/TopicManager'
+KEY = 'DownloaderApp.IceStorm/TopicManager'
 TOPIC_NAME = 'SyncTopic'
 
 

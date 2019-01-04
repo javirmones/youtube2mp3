@@ -14,7 +14,7 @@ import Downloader
 from Work_queue import WorkQueue
 from Transfer_server import TransferI
 
-KEY = 'Downloader.IceStorm/TopicManager'
+KEY = 'DownloaderApp.IceStorm/TopicManager'
 TOPIC_NAME_SYNC = 'SyncTopic'
 TOPIC_NAME_CLIENT = 'ProgressTopic'
 
@@ -43,7 +43,7 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
         self.publisher.notify(list(self.SongList))
 
     def notify(self, songs, current=None):
-        songs=set(songs)
+        songs = set(songs)
         self.SongList.union(songs)
         
 
