@@ -4,7 +4,7 @@
 import sys
 import Ice
 import IceStorm
-Ice.loadSlice('downloader.ice')
+Ice.loadSlice('../Server_side/downloader.ice')
 # pylint: disable=E0401
 import Downloader
 import binascii
@@ -12,6 +12,7 @@ import uuid
 import atexit
 import cmd
 import os.path
+from cmd import Cmd
 
 BLOCK_SIZE = 10240
 CLIENT = None
@@ -107,11 +108,26 @@ class Client(Ice.Application):
                         file_contents.write(data)
                 transfer.end()
 
-class ShellClient():
-    pass
+class ShellClient(Cmd):
+    def do_hello(self, args):
+        """Esto es un ejemplo de lo que puede hacer la consola"""
+        if len(args) == 0:
+            name = 'stranger'
+        else:
+            name = args
+        print("Hello, %s" % name)
+
+    def do_quit(self, args):
+        """Quits the program."""
+        print("Quitting.")
+        shutdown()
+        raise SystemExit
 
 def main():
     CLIENT = Client()
+    prompt = ShellClient()
+    prompt.prompt = '>'
+    prompt.cmdloop('Iniciando ')
     sys.exit(CLIENT.main(sys.argv))
     
 if __name__ == '__main__':
