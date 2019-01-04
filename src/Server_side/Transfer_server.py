@@ -1,5 +1,4 @@
 import binascii
-
 import sys
 import Ice
 Ice.loadSlice('downloader.ice')

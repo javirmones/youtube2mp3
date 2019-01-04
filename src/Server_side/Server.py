@@ -85,7 +85,7 @@ class Server(Ice.Application):
     def run(self, argv):
         
         broker = self.communicator()
-        topic_mgr_proxy = self.communicator().propertyToProxy(KEY)
+        topic_mgr_proxy = self.communicator().stringToProxy(KEY)
 
         if topic_mgr_proxy is None:
             print("property {0} not set".format(KEY))

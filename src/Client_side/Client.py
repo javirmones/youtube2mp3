@@ -15,7 +15,7 @@ import os.path
 
 BLOCK_SIZE = 10240
 CLIENT = None
-KEY = 'Downloader.IceStorm/TopicManager'
+KEY = 'DownloaderApp.IceStorm/TopicManager'
 TOPIC_NAME = 'ProgressTopic'
 
 

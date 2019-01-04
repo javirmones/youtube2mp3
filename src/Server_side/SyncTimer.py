@@ -4,7 +4,7 @@
 import sys
 import Ice
 import IceStorm
-Ice.loadSlice('Downloader.ice')
+Ice.loadSlice('downloader.ice')
 # pylint: disable=E0401
 import Downloader
 import time
@@ -18,7 +18,7 @@ class SyncTimer(Ice.Application):
    def run(self, args):
       broker = self.communicator()
       # Get topic manager
-      topic_mgr_proxy = self.communicator().propertyToProxy(KEY)
+      topic_mgr_proxy = self.communicator().stringToProxy(KEY)
       if topic_mgr_proxy is None:
          print("property {0} not set".format(KEY))
          return 1
@@ -33,7 +33,7 @@ class SyncTimer(Ice.Application):
       except IceStorm.NoSuchTopic:
          topic = topic_mgr.create(TOPIC_NAME)
          
-      publisher = Downloader.SyncTopicPrx.uncheckedCast(topic.getPublisher())
+      publisher = Downloader.SyncEventPrx.uncheckedCast(topic.getPublisher())
 
       # Shot events
       while True:

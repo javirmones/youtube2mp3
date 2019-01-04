@@ -98,8 +98,7 @@ class WorkQueue(Thread):
     def add(self, callback, url):
         '''Add new task to queue'''
         self.send_status(url,Downloader.Status.PENDING)
-        # No estoy seguro de que esto esté bien
-        self.queue.put(Job(callback, url, self.queue))
+        self.queue.put(Job(callback, url, self))
 
     def destroy(self):
         '''Cancel tasks queue'''
