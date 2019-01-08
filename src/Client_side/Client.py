@@ -73,7 +73,7 @@ class Client(Ice.Application):
         # Aqui es lo que no se si se esta haciendo bien #
         adapter = broker.createObjectAdapter("DownloaderFactoryAdapter")
         servant.client = self
-        proxy = adapter.addwithUUID(servant)
+        proxy = adapter.addWithUUID(servant)
         self.progress_proxy = self.progress_topic.subscribeAndGetPublisher(self.qos, proxy)
 
         adapter.activate()   
