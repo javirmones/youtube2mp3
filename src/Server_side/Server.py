@@ -59,12 +59,12 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
         if name in self.servants:
             raise Downloader.SchedulerAlreadyExists()
         servant = DownloaderSchedulerI()
-        proxy_sync = self.syncTopic.subscribeAndGetPublisher(qos, servant)
-        servant.publisher = Downloader.SyncTopicPrx.uncheckedCast(proxy_sync)
-        proxy_stats = self.progressTopic.getPublisher()
-        servant.stat_publisher = Downloader.ProgressTopicPrx.uncheckedCast(proxy_stats)
         identity = Ice.stringToIdentity(name)
         proxy = current.adapter.add(servant, identity)
+        proxy_sync = self.syncTopic.subscribeAndGetPublisher(qos, proxy)
+        servant.publisher = Downloader.SyncEventPrx.uncheckedCast(proxy_sync)
+        proxy_stats = self.progressTopic.getPublisher()
+        servant.stat_publisher = Downloader.ProgressEventPrx.uncheckedCast(proxy_stats)
         self.servants[name] = {'servant': servant, 'proxy': proxy, 'syncProxy': proxy_sync}
         return Downloader.DownloadSchedulerPrx.checkedCast(proxy)
 
@@ -85,7 +85,7 @@ class Server(Ice.Application):
     def run(self, argv):
         
         broker = self.communicator()
-        topic_mgr_proxy = self.communicator().stringToProxy(KEY)
+        topic_mgr_proxy = broker.stringToProxy(KEY)
 
         if topic_mgr_proxy is None:
             print("property {0} not set".format(KEY))

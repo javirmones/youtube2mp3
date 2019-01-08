@@ -17,8 +17,8 @@ class SyncTimer(Ice.Application):
 
    def run(self, args):
       broker = self.communicator()
-      # Get topic manager
-      topic_mgr_proxy = self.communicator().stringToProxy(KEY)
+      topic_mgr_proxy = broker.stringToProxy(KEY)
+      
       if topic_mgr_proxy is None:
          print("property {0} not set".format(KEY))
          return 1
