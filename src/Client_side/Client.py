@@ -41,9 +41,10 @@ class Client(Ice.Application):
     progress_proxy = None
     progress_topic = None
 
-    def run(self, argv):
+    def run(self, endpoint):
+        print(endpoint)
         broker = self.communicator()
-        proxy = broker.stringToProxy(argv[1])
+        proxy = broker.stringToProxy(endpoint)
         self.factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
         
         if not self.factory:
@@ -51,6 +52,7 @@ class Client(Ice.Application):
 
         self.schedulerName = str(uuid.uuid4())
         self.downloaderSch = self.factory.make(self.schedulerName)
+        print("Factoria creada con nombre",self.schedulerName)
 
         topic_mgr_proxy = broker.stringToProxy(KEY)
 
@@ -70,12 +72,10 @@ class Client(Ice.Application):
 
         self.progress_topic = progress_topic
         servant = ProgressEventI()
-        # Aqui es lo que no se si se esta haciendo bien #
         adapter = broker.createObjectAdapter("DownloaderFactoryAdapter")
         servant.client = self
         proxy = adapter.addWithUUID(servant)
         self.progress_proxy = self.progress_topic.subscribeAndGetPublisher(self.qos, proxy)
-
         adapter.activate()   
         self.shutdownOnInterrupt()
         broker.waitForShutdown()
@@ -134,8 +134,10 @@ class ShellClient(Cmd):
         print("Hello, %s" % name)
     
     def do_connect(self, args):
-        ''' Metodo que utilizaremos para conectarnos a la factoría'''
+        ''' Metodo que utilizaremos para conectarnos a la factoría 
+            Uso connect <Endpoint-factoria> '''
         try:
+            #print(args)
             self.CLIENT.run(args)
         except Downloader.SchedulerAlreadyExists:
             print('Duplicated scheduler error reported')
@@ -162,15 +164,15 @@ class ShellClient(Cmd):
     def do_quit(self, args):
         '''Sale del programa'''
         print("Quitting.")
-       
+        sys.exit(CLIENT.main(sys.argv))
         raise SystemExit
 
 def main():
-   # prompt = ShellClient()
-    #prompt.prompt = '>'
-    #prompt.cmdloop('Iniciando youtube2mp3')
-    CLIENT = Client()
-    sys.exit(CLIENT.main(sys.argv))
+    prompt = ShellClient()
+    prompt.prompt = '>'
+    prompt.cmdloop('Iniciando youtube2mp3')
+    #CLIENT = Client()
+    
 
 if __name__ == '__main__':
     main()

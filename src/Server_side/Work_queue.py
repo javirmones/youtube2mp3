@@ -1,4 +1,4 @@
-#!/usr/bin/python3.6
+#!/usr/bin/python3
 # -*- mode:python; coding:utf-8; tab-width:4 -*-
 
 '''
