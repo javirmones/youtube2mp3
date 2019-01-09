@@ -44,15 +44,7 @@ class Client(Ice.Application):
     def run(self, endpoint):
         print(endpoint)
         broker = self.communicator()
-        proxy = broker.stringToProxy(endpoint)
-        self.factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
-        
-        if not self.factory:
-            raise RuntimeError('Invalid proxy')
-
-        self.schedulerName = str(uuid.uuid4())
-        self.downloaderSch = self.factory.make(self.schedulerName)
-        print("Factoria creada con nombre",self.schedulerName)
+       
 
         topic_mgr_proxy = broker.stringToProxy(KEY)
 
@@ -78,8 +70,23 @@ class Client(Ice.Application):
         self.progress_proxy = self.progress_topic.subscribeAndGetPublisher(self.qos, proxy)
         adapter.activate()   
         self.shutdownOnInterrupt()
-        broker.waitForShutdown()
+	shell = ShellClient()
+	shell.CLIENT = self
+	shell.cmdloop()
+	#desuscribir el progress topic porque ya ha terminado cliente
+        
         ################################################
+
+    def connect(self, endpoint):
+	proxy = broker.stringToProxy(endpoint)
+        self.factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
+        
+        if not self.factory:
+            raise RuntimeError('Invalid proxy')
+
+        self.schedulerName = str(uuid.uuid4())
+        self.downloaderSch = self.factory.make(self.schedulerName)
+        print("Factoria creada con nombre",self.schedulerName)
 
     def addDownload(self, url):         
         # Async ami
@@ -123,7 +130,8 @@ class Client(Ice.Application):
                 transfer.end()
 
 class ShellClient(Cmd):
-    CLIENT = Client()
+    CLIENT = None
+    
 
     def do_hello(self, args):
         '''Esto es un ejemplo de lo que puede hacer la consola'''
@@ -136,9 +144,11 @@ class ShellClient(Cmd):
     def do_connect(self, args):
         ''' Metodo que utilizaremos para conectarnos a la factoría 
             Uso connect <Endpoint-factoria> '''
+	
         try:
             #print(args)
             self.CLIENT.run(args)
+	
         except Downloader.SchedulerAlreadyExists:
             print('Duplicated scheduler error reported')
         except Downloader.SchedulerNotFound:

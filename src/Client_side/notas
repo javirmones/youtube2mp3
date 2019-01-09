@@ -1,0 +1,15 @@
+Se ha creado un método llamado connect , ese metodo obtiene el endpoint 
+que hay que pasar a la sell para conectarse.
+
+Al crear el metodo connect , en metodos como addDownload, puede aparecer el error de que
+downloaderSch es nulo, asi que ay que poner una excepcion( se es nulo , primero conectarse)
+
+Al final del def run del cliente se ha añadido codigo que crea la shell y falta lo del comentario 
+( desuscribir el progress topic porque el cliente ya ha terminado su ejecucuion)
+
+En el codigo de la shell es recomendable , en los metodos que devuelve algo como getsonglist, 
+no cogerlo a pelo, sino meterlo a una lista ( capa presentacion) ( no es obligatorio)
+
+Tambien en la shell es recomendable poner alguna excepcion por si peta que te diga lo que pasa.
+
+Cambiar cosas del main final 
