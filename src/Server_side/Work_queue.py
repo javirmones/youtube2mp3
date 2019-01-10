@@ -68,7 +68,7 @@ class WorkQueue(Thread):
     QUIT = 'QUIT'
     CANCEL = 'CANCEL'
 
-    def __init__(self,scheduler):
+    def __init__(self, scheduler):
         super(WorkQueue, self).__init__()
         self.scheduler = scheduler
         self.queue = Queue()
@@ -95,10 +95,10 @@ class WorkQueue(Thread):
         self.scheduler.stat_publisher.notify(status_data)
             
 
-    def add(self, callback, url):
+    def add(self, cb, url):
         '''Add new task to queue'''
-        self.send_status(url,Downloader.Status.PENDING)
-        self.queue.put(Job(callback, url, self))
+        self.send_status(url, Downloader.Status.PENDING)
+        self.queue.put(Job(callback=cb, url=url, work_queue=self))
 
     def destroy(self):
         '''Cancel tasks queue'''

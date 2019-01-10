@@ -32,7 +32,9 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
 
     def addDownloadTask(self, cb, url, current=None):
         #amd
-        self.work_queue.add(cb, url)
+        print(url)
+        print(cb)
+        self.tasks.add(cb, url)
 
     def get(self, song, current=None):
         return TransferI(song)
