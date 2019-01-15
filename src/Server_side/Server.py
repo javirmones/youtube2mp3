@@ -20,8 +20,8 @@ TOPIC_NAME_CLIENT = 'ProgressTopic'
 
 class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
     SongList = set()
-    publisher = None
-    stat_publisher = None
+    publisher_sync = None
+    publisher_stats = None
 
     def __init__(self):
         self.tasks = WorkQueue(self)
@@ -30,19 +30,21 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
     def getSongList(self, current=None):
         return list(self.SongList)
 
-    def addDownloadTask(self, cb, url, current=None):
-        #amd
-        print(url)
-        print(cb)
-        self.tasks.add(cb, url)
+    def addDownloadTask(self, url, current=None):
+        callback = Ice.Future()
+        self.tasks.add(callback, url)
+        return callback
 
     def get(self, song, current=None):
-        return TransferI(song)
+        controller = TransferI(song)
+        proxy = current.adapter.addWithUUID(controller)
+        transfer = Downloader.TransferPrx.checkedCast(proxy)
+        return transfer
 
     def requestSync(self, current=None):
-        if self.publisher is None:
+        if self.publisher_sync is None:
             return
-        self.publisher.notify(list(self.SongList))
+        self.publisher_sync.notify(list(self.SongList))
 
     def notify(self, songs, current=None):
         songs = set(songs)
@@ -64,9 +66,9 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
         identity = Ice.stringToIdentity(name)
         proxy = current.adapter.add(servant, identity)
         proxy_sync = self.syncTopic.subscribeAndGetPublisher(qos, proxy)
-        servant.publisher = Downloader.SyncEventPrx.uncheckedCast(proxy_sync)
+        servant.publisher_sync = Downloader.SyncEventPrx.uncheckedCast(proxy_sync)
         proxy_stats = self.progressTopic.getPublisher()
-        servant.stat_publisher = Downloader.ProgressEventPrx.uncheckedCast(proxy_stats)
+        servant.publisher_stats = Downloader.ProgressEventPrx.uncheckedCast(proxy_stats)
         self.servants[name] = {'servant': servant, 'proxy': proxy, 'syncProxy': proxy_sync}
         return Downloader.DownloadSchedulerPrx.checkedCast(proxy)
 
@@ -77,7 +79,6 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
         self.syncTopic.unsubscribe(self.servants[name]['syncProxy'])
         self.servants[name]['servant'].tasks.destroy()
         del(self.servants[name])
-
 
     def availableSchedulers(self, current=None):
         return len(self.servants)

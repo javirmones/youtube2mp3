@@ -40,6 +40,7 @@ class Shell(Cmd):
             Uso addDownload <url_youtube> '''
         try:
             self.CLIENT.addDownload(args)
+            print(type(args))
         except Exception as e:
             print("Ha habido un error", e)
 

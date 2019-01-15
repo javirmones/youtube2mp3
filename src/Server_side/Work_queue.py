@@ -92,13 +92,13 @@ class WorkQueue(Thread):
         status_data = Downloader.ClipData()   
         status_data.URL = url     
         status_data.status = status     
-        self.scheduler.stat_publisher.notify(status_data)
+        self.scheduler.publisher_stats.notify(status_data)
             
 
     def add(self, cb, url):
         '''Add new task to queue'''
         self.send_status(url, Downloader.Status.PENDING)
-        self.queue.put(Job(callback=cb, url=url, work_queue=self))
+        self.queue.put(Job(cb, url, self))
 
     def destroy(self):
         '''Cancel tasks queue'''

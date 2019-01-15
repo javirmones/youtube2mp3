@@ -93,7 +93,7 @@ class Client(Ice.Application):
     def addDownload(self, url):         
         if self.downloaderSch is None:
             raise RuntimeError('Conectese a una factoria')
-        self.downloaderSch.addDownloadTaskAsync(url=url)
+        self.downloaderSch.addDownloadTaskAsync(url)
     
     def getSongList(self):
         if self.downloaderSch is None:
