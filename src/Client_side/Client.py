@@ -106,26 +106,15 @@ class Client(Ice.Application):
             raise RuntimeError('Conectese a una factoria')
         print(self.factory.availableSchedulers())
 
-    def getFile(self, song, destination='./'):
+    def getFile(self, song, destination='../Songs'):
         if self.downloaderSch is None:
             raise RuntimeError('Conectese a una factoria')
         transfer = self.downloaderSch.get(song)
         self.receive(transfer, os.path.join(destination, song))
 
-    def shutDown(self):
-        # Esto hay que mejorarlo 
-        if self.factory is None:
-            return
-        if self.downloaderSch is None:
-            return
-        if self.schedulerName is None:
-            return
-        if self.progress_topic is None:
-            return
-        if self.progress_proxy is None:
-            return 
-            
-        self.factory.kill(self.schedulerName)
+    def shutDown(self, name):
+        # Esto hay que mejorarlo           
+        self.factory.kill(name)
         self.progress_topic.unsubscribe(self.progress_proxy)
         self.progress_topic = None
         self.progress_proxy = None
