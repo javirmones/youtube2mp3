@@ -12,6 +12,7 @@ import uuid
 import atexit
 import cmd
 import os.path
+import pprint
 from cmd import Cmd
 from ShellClient import Shell
 
@@ -19,6 +20,7 @@ BLOCK_SIZE = 10240
 CLIENT = None
 KEY = 'DownloaderApp.IceStorm/TopicManager'
 TOPIC_NAME = 'ProgressTopic'
+SERVANTS = {}
 
 @atexit.register
 def shutdown(*args):
@@ -41,7 +43,7 @@ class Client(Ice.Application):
     progress_proxy = None
     progress_topic = None
     lista_canciones = []
-
+    
     def run(self, argv):
         try:   
             broker = self.communicator()
@@ -75,13 +77,15 @@ class Client(Ice.Application):
             shell.cmdloop('-----Iniciando youtube2mp3-----')
             self.progress_topic.unsubscribe(self.progress_proxy)
 
-        except Exception:
-            print("Tio el archivo de configuración")
+        except Exception as e:
+            print("Tio el archivo de configuración",e)
 
     def connect(self, endpoint):
         broker = self.communicator()
         proxy = broker.stringToProxy(endpoint)
+        
         self.factory = Downloader.SchedulerFactoryPrx.checkedCast(proxy)
+        SERVANTS = self.factory.devolverDict()
         
         if not self.factory:
             raise RuntimeError('Proxy no válido')
@@ -111,10 +115,19 @@ class Client(Ice.Application):
             raise RuntimeError('Conectese a una factoria')
         transfer = self.downloaderSch.get(song)
         self.receive(transfer, os.path.join(destination, song))
+    
+    def killingInTheNameOf(self,name):
+        #self.factory.kill()
+        self.progress_topic.unsubscribe(self.progress_proxy)
+        self.progress_topic = None
+        self.progress_proxy = None
 
-    def shutDown(self, name):
+    def printAll(self):
+        pprint.pprint(SERVANTS,indent=4)
+
+    def shutDown(self):
         # Esto hay que mejorarlo           
-        self.factory.kill(name)
+        #self.factory.kill()
         self.progress_topic.unsubscribe(self.progress_proxy)
         self.progress_topic = None
         self.progress_proxy = None

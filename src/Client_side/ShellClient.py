@@ -68,8 +68,9 @@ class Shell(Cmd):
         except Exception as e:
             print("No hay ningun scheduler creado", e)
             
-    def do_kill(self, args):
-        self.CLIENT.shutDown(args)
+    def do_print(self, args):
+        print(args)
+        self.CLIENT.printAll()
 
     def do_quit(self, args):
         '''Sale del programa'''

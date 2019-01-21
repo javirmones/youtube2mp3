@@ -26,8 +26,7 @@ class SyncTimer(Ice.Application):
       if not topic_mgr:
          print(': invalid proxy')
          return 2
-
-      # Get topic
+         
       try:
          topic = topic_mgr.retrieve(TOPIC_NAME)
       except IceStorm.NoSuchTopic:
@@ -35,13 +34,10 @@ class SyncTimer(Ice.Application):
          
       publisher = Downloader.SyncEventPrx.uncheckedCast(topic.getPublisher())
 
-      # Shot events
       while True:
-         print('Sync requested')
          publisher.requestSync()
          time.sleep(5.0)
 
-      # Bye
       return 0
 
 

@@ -10,6 +10,7 @@ import IceStorm
 Ice.loadSlice('downloader.ice')
 # pylint: disable=E0401
 import Downloader
+import pprint
 
 from Work_queue import WorkQueue
 from Transfer_server import TransferI
@@ -22,7 +23,7 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
     SongList = set()
     publisher_sync = None
     publisher_stats = None
-
+    
     def __init__(self):
         self.tasks = WorkQueue(self)
         self.tasks.start()
@@ -53,19 +54,18 @@ class DownloaderSchedulerI(Downloader.DownloadScheduler, Downloader.SyncEvent):
 
 class DownloaderFactoryI(Downloader.SchedulerFactory):
     servants = {}
-   
+    qos = {}
     def __init__(self,syncTopic, progressTopic):
         self.syncTopic = syncTopic
         self.progressTopic = progressTopic
 
     def make(self, name, current=None):
-        qos = {}
         if name in self.servants:
             raise Downloader.SchedulerAlreadyExists()
         servant = DownloaderSchedulerI()
         identity = Ice.stringToIdentity(name)
         proxy = current.adapter.add(servant, identity)
-        proxy_sync = self.syncTopic.subscribeAndGetPublisher(qos, proxy)
+        proxy_sync = self.syncTopic.subscribeAndGetPublisher(self.qos, proxy)
         servant.publisher_sync = Downloader.SyncEventPrx.uncheckedCast(proxy_sync)
         proxy_stats = self.progressTopic.getPublisher()
         servant.publisher_stats = Downloader.ProgressEventPrx.uncheckedCast(proxy_stats)
@@ -81,6 +81,7 @@ class DownloaderFactoryI(Downloader.SchedulerFactory):
         del(self.servants[name])
 
     def availableSchedulers(self, current=None):
+        pprint.pprint(self.servants, indent=4)
         return len(self.servants)
 
 
