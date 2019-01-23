@@ -3,7 +3,7 @@ Youtube DL: (Si no funcionara instalar desde su repositorio en github)
 ```
 sudo pip install youtube-dl
 ```
-ICE
+ZeroC Ice
 ```
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv B6391CB2CFBA643D
 sudo apt-add-repository "deb http://zeroc.com/download/Ice/3.7/ubuntu18.04 stable main"
@@ -13,50 +13,56 @@ sudo apt-get install zeroc-ice-all-runtime zeroc-ice-all-dev
 ```
 Templates.xml
 
-Debido a que se utilizará el servicio IcePatch2, se usará por lo tanto una versión de la plantilla más vieja:
-```
-sudo pip install youtube-dl
-```
+Debido a que se utilizará el servicio IcePatch2, se usará por lo tanto una versión de la plantilla más vieja, que usted deberá copiar en el directorio /usr/share/ice. [Templates.xml](https://github.com/javirmones/youtube2mp3/blob/development/resources/templates.xml)
 
 
-## Estructura de archivos
+
+## Ejecución del proyecto
+
 Crea todos los directorios necesarios (limpiandolos previamente) para el inicio de la práctica y ejecuta el nodo principal.
-1.  makedirs.sh
+1.  make_dirs.sh
 
 Copia los archivos necesarios que necesiten ser distribuidos y los binariza con icepatch2calc.
 
-2. startPathDistribution.sh
+2. start_distrib.sh
 
-Ambos archivos se ejecutan de la siguiente manera:
+Ambos archivos se ejecutan de la siguiente manera: (si hubiera algun problema con los permisos, se usaría chmod)
 ```
 chmod +x <nombre_archivo>.sh
 ./<nombre_archivo>.sh
 ```
-### Lado del Servidor
-1. Server.py
+Una vez ejecutados sendos comandos, procederemos a abrir la interfaz gráfica de Ice:
+```
+icegridgui
+```
+Se crea una nueva conexión con el nodo que se esta ejecutando, se abre el archivo *downloader.xml* con Open -> Open From File, y se tendrá el proyecto *DownloaderApp*, que deberemos guardar en el registro con -> Save to a Registry.
 
-*DownloaderFactoryI* es un método del slice donde creamos, destruimos y comprobamos el número de  factorias.
+Una vez realizado este proceso, procederemos a cambiar de pestaña
+### Servidor
+1. server.py
 
-No obstante se ha utilizado el archivo *testSchedulerFactory.py* para probar la factoría.
-El orden de ejecución es el siguiente:
+*DownloaderFactoryI* es un método del slice donde creamos, destruimos y comprobamos el número de factorias.
+  * make
+  * kill
+  * availableSchedulers
 
-  1. ./makedirs.sh -> Esto nos ejecutará el nodo 1 el cual imprimirá por consola el Endpoint de la factoria.
-  2. ./startPathDistribution.sh 
-  3. icegridgui -> Crear conexion y cargar el archivo downloader.xml -> Save to a registry -> Apply path distribution
-  4. ./testSchedulerFactory.py --Ice.Config=locator.config "Endpoint factoria"
-
-*DownloadSchedulerI* es otro método del slice, el cual es un Downloader sus métodos son los siguientes:
- * addDonwloadTask(string url); -> Almacenamiento de los archivos obtenidos tras el proceso de extracción del audio en un directorio local al servidor.
- * Transfer* get(string song); -> Método para descargar los ficheros almacenados por el servidor en el cliente.
+*DownloadSchedulerI* es otro método del slice, es un Downloader que tiene los siguientes métodos. 
+ * addDonwloadTask(string url); -> Método para descargar los ficheros almacenados por el servidor en el cliente.
+ * Transfer* get(string song); -> Almacenamiento de los archivos obtenidos tras el proceso de extracción del audio en un directorio local al servidor.
  * SongsList getSongsList(); -> Recepción de peticiones de listado de los audios como una secuencia de strings.
-
-*Creación del canal de eventos*
-TO - DO
+  
+*Canales de eventos*
+  * Sync Topic
+  * Progress Topic
  
-2. Transfer_server.py
-3. SyncTimer.py
+2. transfer_server.py
 
-### Lado del cliente
-1. Client.py
+3. sync_timer.py
 
-TO - DO
+4. work_queue.py
+
+### Cliente
+1. client.py
+
+2. shell_client
+
