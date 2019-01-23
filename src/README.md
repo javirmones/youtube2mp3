@@ -2,15 +2,6 @@
 ```
 sudo pip install youtube-dl
 ```
-## Trabajo pendiente
- 1. Creación del cliente
-   2. Solicitar la descarga de una URL correspondiente a un clip de Youtube.
-   3. Recibir las notificaciones relativas al proceso de la descarga, y mostrarlo al usuario por algún medio, mediante la implementación de la interfaz *ProgressTopic*
-   4. Obtención de los ficheros de audio.
-   5. Obtención de la lista completa de ficheros descargados.
- 6. Algunos arreglos más en el código
- 7. Creación de la memoria de la práctica.
- 
 ## Estructura de archivos
 Crea todos los directorios necesarios (limpiandolos previamente) para el inicio de la práctica y ejecuta el nodo principal.
 1.  makedirs.sh
