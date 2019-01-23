@@ -56,13 +56,17 @@ Una vez realizado este proceso, procederemos a cambiar de pestaña
   * Progress Topic
  
 2. transfer_server.py
+  * asdf
 
 3. sync_timer.py
+  *
 
 4. work_queue.py
 
 ### Cliente
 1. client.py
+*ProgressEvent*
+
 
 2. shell_client
 
