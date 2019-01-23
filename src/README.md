@@ -16,7 +16,6 @@ Templates.xml
 Debido a que se utilizará el servicio IcePatch2, se usará por lo tanto una versión de la plantilla más vieja, que usted deberá copiar en el directorio /usr/share/ice. [Templates.xml](https://github.com/javirmones/youtube2mp3/blob/development/resources/templates.xml)
 
 
-
 ## Ejecución del proyecto
 
 Crea todos los directorios necesarios (limpiandolos previamente) para el inicio de la práctica y ejecuta el nodo principal.
@@ -37,7 +36,10 @@ icegridgui
 ```
 Se crea una nueva conexión con el nodo que se esta ejecutando, se abre el archivo *downloader.xml* con Open -> Open From File, y se tendrá el proyecto *DownloaderApp*, que deberemos guardar en el registro con -> Save to a Registry.
 
-Una vez realizado este proceso, procederemos a cambiar de pestaña
+Una vez realizado este proces se cambiará a la pestaña Live Deployment, comprobará que efectivamente puede aplicar la distribución de la aplicación, y realizará Tools -> Application -> Apply path distribution.
+
+Una vez hecho active todos los servicios pulsando sobre ellos el botón enable.
+
 ### Servidor
 1. server.py
 
@@ -59,7 +61,7 @@ Una vez realizado este proceso, procederemos a cambiar de pestaña
   * asdf
 
 3. sync_timer.py
-  *
+  * er
 
 4. work_queue.py
 
@@ -69,4 +71,5 @@ Una vez realizado este proceso, procederemos a cambiar de pestaña
 
 
 2. shell_client
+asd
 
