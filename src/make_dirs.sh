@@ -8,13 +8,15 @@ echo "Limpieza ejecutada en /youtube2mp3, /registry y /node1"
 mkdir -p /tmp/youtube2mp3
 mkdir -p /tmp/db/registry
 mkdir -p /tmp/db/node1
+mkdir -p ./Songs
 echo "Directorios necesarios creados"
 
 echo "¿Desea usted eliminar las canciones del directorio /Songs? (y/n)"
 read var1
 if [ $var1 = y ]
 then
-	echo "Llega bien"
+	rm -rf ./Songs/*
+	echo "Eliminadas todas las canciones"
 fi
 
 cd Server_side

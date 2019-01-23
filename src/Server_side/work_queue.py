@@ -9,8 +9,8 @@ from threading import Thread
 from queue import Queue
 
 import os.path
-import youtube_dl
-import Ice
+import youtube_dl # pylint: disable=E0401
+import Ice # pylint: disable=E0401
 # pylint: disable=C0413
 Ice.loadSlice('downloader.ice')
 # pylint: enable=C0413
@@ -89,16 +89,16 @@ class WorkQueue(Thread):
         self.queue.task_done()
 
     def send_status(self, url, status):
-        status_data = Downloader.ClipData()   
-        status_data.URL = url     
-        status_data.status = status     
+        '''Send status'''
+        status_data = Downloader.ClipData()
+        status_data.URL = url
+        status_data.status = status
         self.scheduler.publisher_stats.notify(status_data)
-            
 
-    def add(self, cb, url):
+    def add(self, call_back, url):
         '''Add new task to queue'''
         self.send_status(url, Downloader.Status.PENDING)
-        self.queue.put(Job(cb, url, self))
+        self.queue.put(Job(call_back, url, self))
 
     def destroy(self):
         '''Cancel tasks queue'''
