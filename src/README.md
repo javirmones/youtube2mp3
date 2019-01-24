@@ -3,7 +3,7 @@
 ```
 sudo pip install youtube-dl
 ```
-Si no funcionara, intentar instalar la versión de la rama master de su repositorio github
+Si no funcionase, intentar instalar la versión de la rama master de su repositorio github
 
 ```
 git clone https://github.com/rg3/youtube-dl
@@ -69,11 +69,11 @@ El método *shut_down* -> Desconecta a todas las factorias al apagar el servidor
   
 3. **sync_timer.py **
 
-  *SyncTimer* 
-   * *shot_events*
+*SyncTimer* 
+  * *shot_events*
 
 4. **work_queue.py**
-
+Código de ayuda para implementar la cola de tareas en los servidores de descarga.
  * WorkQueue
  * Job
 
@@ -84,7 +84,7 @@ El cliente tiene las siguientes clases:
 
 *ProgressEvent*
  *  notify
-La clase client*Client*
+La clase client *Client*
  * connect
  * add_download
  * get_songlist
