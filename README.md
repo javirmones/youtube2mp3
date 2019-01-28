@@ -1,7 +1,3 @@
-# youtube2mp3
-
-Repositorio de la asignatura "Sistemas Distribuidos"
-
 ## Descripción del proyecto
 El objetivo principal del proyecto es diseñar un sistema cliente-servidor que permita la extracción 
 de ficheros de audio a partir de la URL de clips de youtube. Este sistema debe ser escalable, 
