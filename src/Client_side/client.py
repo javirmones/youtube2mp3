@@ -73,6 +73,8 @@ class Client(Ice.Application):
         shell = Shell()
         shell.CLIENT = self
         shell.cmdloop('-----Iniciando youtube2mp3-----')
+        if self.progress_topic is None:
+            return
         self.progress_topic.unsubscribe(self.progress_proxy)
         return 0
 
@@ -121,6 +123,10 @@ class Client(Ice.Application):
 
     def shut_down(self, name):
         ''' Desconectar todo '''
+        if self.progress_proxy is None:
+            return
+        if self.progress_topic is None:
+            return
         self.factory.kill(name)
         self.progress_topic.unsubscribe(self.progress_proxy)
         self.progress_topic = None
