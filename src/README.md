@@ -45,63 +45,52 @@ Se crea una nueva conexión con el nodo que se esta ejecutando, se abre el archi
 
 Una vez realizado este proces se cambiará a la pestaña Live Deployment, comprobará que efectivamente puede aplicar la distribución de la aplicación, y realizará Tools -> Application -> Apply path distribution.
 
-Una vez hecho active todos los servicios pulsando sobre ellos el botón enable.
+Una vez hecho, active todos los servicios pulsando sobre ellos el botón enable.
 
 ### Servidor
 1. **server.py**
 
-*DownloaderFactoryI* es una interfaz del slice donde creamos, destruimos y comprobamos el número de factorias.
-  * make -> Se crea una factoria con un scheduler y un uuid.
-  * kill -> Destrucción de una factoría.
-  * availableSchedulers -> Comprobar el número de schedulers disponibles.
+La clase *DownloaderFactoryI* es una interfaz del slice donde creamos, destruimos y comprobamos el número de factorias.
+  * make -> se crea una factoria con un scheduler y un uuid.
+  * kill -> destrucción de una factoría.
+  * availableSchedulers -> comprobar el número de schedulers disponibles.
   
-*DownloadSchedulerI* es otra interfaz del slice, es un Downloader que tiene los siguientes métodos. 
- * addDonwloadTask -> Método para descargar los ficheros almacenados por el servidor en el cliente.
- * Transfer* get -> Almacenamiento de los archivos obtenidos tras el proceso de extracción del audio en un directorio local al servidor.
- * SongsList getSongsList -> Recepción de peticiones de listado de los audios como una secuencia de strings.
+La clase *DownloadSchedulerI* es otra interfaz del slice, es un Downloader que tiene los siguientes métodos. 
+ * addDonwloadTask -> método para descargar los ficheros almacenados por el servidor en el cliente.
+ * Transfer* get -> almacenamiento de los archivos obtenidos tras el proceso de extracción del audio en un directorio local al servidor.
+ * SongsList getSongsList -> recepción de peticiones de listado de los audios como una secuencia de strings.
  
 El *Server* es la clase principal que crea los canales de eventos y crea los schedulers.
-El método *shut_down* -> Desconecta a todas las factorias al apagar el servidor.
+El método *shut_down* -> desconecta a todas las factorias al apagar el servidor, utiliza el decorador @atexit para poder salir.
 
 2. **transfer_server.py** 
 
   * TransferI -> interfaz que se implementa del slice cuya misión es la transferencia de ficheros entre cliente y servidor..
   
-3. **sync_timer.py **
+3. **sync_timer.py**
 
-*SyncTimer* 
-  * *shot_events*
+  * *shot_events* -> dispara los eventos de sincronización en el canal de eventos SyncTopic.
 
-4. **work_queue.py**
-Código de ayuda para implementar la cola de tareas en los servidores de descarga.
- * WorkQueue
- * Job
+4. **work_queue.py** -> código de ayuda para implementar la cola de tareas en los servidores de descarga.
 
 ### Cliente
 1. **client.py**
 
 El cliente tiene las siguientes clases:
 
-*ProgressEvent*
+La clase *ProgressEventI* es la implementación de la interfaz en la cual se trata de notificar de los cambios de estado en una canción mediante el uso del método *notify* en el canal de eventos ProgressTopic.
  *  notify
-La clase client *Client*
- * connect
- * add_download
- * get_songlist
- * available_schedulers
- * get_file
- * shut_down
-receive
+ 
+La clase *Client* se divide en dos partes, al tratar de realizar el desarrollo se ha realizado un cliente pesado y una shell que utilizará dicho cliente, tiene los siguientes métodos.
+ * connect -> conexión del cliente al servidor haciendo uso del método *make*.
+ * add_download -> añadir a la work_queue una descarga con una url.
+ * get_songlist -> obtener la lista de canciones pertinente al scheduler.
+ * available_schedulers -> comprueba la cantidad de schedulers disponibles para un determinado cliente.
+ * get_file -> transferencia de fichero desde el servidor al cliente.
+ * shut_down -> desconexión de un scheduler y eliminación de los canales de eventos.
+receive -> el método receive es un método auxiliar que consta de la transferencia entre archivos entre cliente y servidor.
 
 2. **shell_client**
 
-La clase Shell 
- * do_connect
- * do_check_status
- * do_add_download
- * do_get_songlist
- * do_get
- * complete_get
- * do_available_schedulers
- * do_kill
- * do_EOF
+La clase *Shell* es la parte ligera que compone al cliente simplemente los métodos de esta clase utilizarán los métodos del cliente, salvo el método *complete_get* que se utilizará para hacer que sea mas sencilla la obtención de una canción desde el servidor sin que sea necesario poner el nombre completo de la canción que se quiera obtener, basta con pulsar TAB para autocompletar.
+
