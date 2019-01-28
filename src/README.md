@@ -47,6 +47,11 @@ Una vez realizado este proces se cambiará a la pestaña Live Deployment, compro
 
 Una vez hecho, active todos los servicios pulsando sobre ellos el botón enable.
 
+Después ejecutamos el cliente:
+
+```
+./client.py --Ice.Config=client.config
+```
 ### Servidor
 1. **server.py**
 
@@ -79,7 +84,6 @@ El método *shut_down* -> desconecta a todas las factorias al apagar el servidor
 El cliente tiene las siguientes clases:
 
 La clase *ProgressEventI* es la implementación de la interfaz en la cual se trata de notificar de los cambios de estado en una canción mediante el uso del método *notify* en el canal de eventos ProgressTopic.
- *  notify
  
 La clase *Client* se divide en dos partes, al tratar de realizar el desarrollo se ha realizado un cliente pesado y una shell que utilizará dicho cliente, tiene los siguientes métodos.
  * connect -> conexión del cliente al servidor haciendo uso del método *make*.
@@ -93,4 +97,6 @@ receive -> el método receive es un método auxiliar que consta de la transferen
 2. **shell_client**
 
 La clase *Shell* es la parte ligera que compone al cliente simplemente los métodos de esta clase utilizarán los métodos del cliente, salvo el método *complete_get* que se utilizará para hacer que sea mas sencilla la obtención de una canción desde el servidor sin que sea necesario poner el nombre completo de la canción que se quiera obtener, basta con pulsar TAB para autocompletar.
+
+Usando el comando *help* <nombre_metodo> tendremos ayuda disponible para el uso de cada método en la shell.
 
