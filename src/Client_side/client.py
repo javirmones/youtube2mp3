@@ -7,6 +7,7 @@ import sys
 import binascii
 import uuid
 import os.path
+import re
 
 from shell_client import Shell
 
@@ -92,10 +93,11 @@ class Client(Ice.Application):
         ''' Añadir descarga a la cola de trabajo de un scheduler '''
         if self.downloader_scheduler is None:
             raise RuntimeError('Conectese a una factoria')
-        try:
-            self.downloader_scheduler.addDownloadTaskAsync(url)
-        except Exception as err: #pylint:disable=W0703
-            print("No ha introducido una url válida", err)
+
+        if yt_url_validation(url) is None:
+            raise RuntimeError('Usted no ha introducido una url válida de youtube')
+        self.downloader_scheduler.addDownloadTaskAsync(url)
+
 
     def get_songlist(self):
         ''' Obtener la lista de canciones '''
@@ -137,6 +139,17 @@ def receive(transfer, destination_file):
             if data:
                 file_contents.write(data)
         transfer.end()
+
+def yt_url_validation(url):
+    youtube_regex = (
+        r'(https?://)?(www\.)?'
+        '(youtube|youtu|youtube-nocookie)\.(com|be)/'
+        '(watch\?v=|embed/|v/|.+\?v=)?([^&=%\?]{11})')
+
+    match = re.match(youtube_regex, url)
+
+    if match:
+        return match.group()
 
 
 CLIENT = Client()

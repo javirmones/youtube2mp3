@@ -135,13 +135,12 @@ class Server(Ice.Application): #pylint: disable=R0903
         broker.waitForShutdown()
         return 0
 
-    @atexit.register
     def shut_down(self):
         ''' Elimina a todos los sirvientes cuando se apague el server '''
-        lista = self.servant.servants.keys()
-        for name in lista:
+        for name in self.servant.servants.keys():
             self.servant.kill(name)
 
 
 SERVER = Server()
+atexit.register(SERVER.shut_down)
 sys.exit(SERVER.main(sys.argv))
